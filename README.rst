@@ -8,6 +8,8 @@ CLI interface to quickly see timetables for a Föli bus stop(s), including time 
 Installation
 ============
 
+Install focli by running::
+
     git clone https://github.com/joohoi/focli.git
     cd focli
     python setup.py install
@@ -16,10 +18,26 @@ Installation
 Usage
 =====
 
-    # Timetable for single bus stop
+Timetable for single bus stop::
+
     focli 157
 
-Or::
+Or timetables for multiple stops::
 
-    # Timetables for multible stops 
     focli 157 122
+
+
+Features
+========
+
+* Displays realtime data if available for the stop
+* Shows the schedule for the current hour (see TODO section for more)
+
+TODO
+====
+
+* Configure the time range to search for
+* Bus stop bookmark handling
+* Add colors to terminal output
+* Display multiple stop schedules side by side, if terminal width permits
+
