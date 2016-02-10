@@ -20,7 +20,16 @@ Usage
 
 Timetable for single bus stop::
 
+    $ focli 157
     focli 157
+    +-------+------+------------+
+    |  Time | Line | Difference |
+    +-------+------+------------+
+    | 19:22 |  30  |     0      |
+    | 19:52 |  30  |     0      |
+    +-------+------+------------+
+
+
 
 Or timetables for multiple stops::
 
