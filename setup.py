@@ -4,7 +4,8 @@ import focli
 
 install_requires = [
     'requests>=2.3.0',
-    'prettytable>=0.7.2'
+    'blessings>=1.6',
+    'six>=1.10.0'
 ]
 
 setup(

@@ -1,9 +1,11 @@
 import datetime
 import json
+import math
 
 import requests
+from six.moves import range
+from folitable import FoliTable
 from blessings import Terminal
-
 
 
 class FoliPrint:
@@ -16,20 +18,38 @@ class FoliPrint:
                 self.stops.append(new_stop)
 
     def print_lines(self):
+        tables_handled = 0
+        timetables = self.get_tables()
+        t_per_line = self.fits_line()
+        while len(timetables) > tables_handled:
+            if (len(timetables)-tables_handled) < t_per_line:
+                handle = len(timetables)-tables_handled
+            else:
+                handle = t_per_line
+            p_list = timetables[int(tables_handled):int(tables_handled+handle)]
+            height = max(h.num_lines() for h in p_list)
+            for i in range(height):
+                line = " ".join([t.get_row(i) for t in p_list])
+                print(line)
+            tables_handled += handle
+
+    def fits_line(self):
+        term = Terminal()
+        return math.floor(term.width/29)
+
+    def get_tables(self):
+        tables = []
         for s in self.stops:
+            t = FoliTable(s.stop_name)
             journeys = self.filter_list(s.journeys)
-            table = PrettyTable(["Time", "Line", "Difference"])
             for jo in journeys:
                 f_timediff = datetime.timedelta(minutes=int(jo.timediff))
                 line_time = jo.time + f_timediff
                 f_time = "{0:02d}:{1:02d}".format(line_time.hour,
                                                   line_time.minute)
-                table.add_row([
-                    f_time,
-                    jo.name,
-                    jo.timediff])
-            table.sort_key("Time")
-            print(table)
+                t.add_row(f_time, jo.name, jo.timediff)
+            tables.append(t)
+        return tables
 
     def filter_list(self, flist, start_min=-5, end_min=60):
         now = datetime.datetime.now()
