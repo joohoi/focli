@@ -2,7 +2,8 @@ import datetime
 import json
 
 import requests
-from prettytable import PrettyTable
+from blessings import Terminal
+
 
 
 class FoliPrint:
