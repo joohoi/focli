@@ -1,15 +1,24 @@
 from blessings import Terminal
 
+try:
+    from html import unescape  # python 3.4+
+except ImportError:
+    try:
+        from html.parser import HTMLParser  # python 3.x (<3.4)
+    except ImportError:
+        from HTMLParser import HTMLParser  # python 2.x
+    unescape = HTMLParser().unescape
+
 
 class FoliTable:
     def __init__(self, name):
         self.width = 24
         self.rows = []
         self.term = Terminal()
-        name = self.normalize(name, self.width)
+        name = self.normalize(unescape(name), self.width)
         self.tpl_head = [
             "+--------+--------+--------+",
-            "| {headline} |".format(headline=name),
+            "| {headline} |".format(headline=name.encode('utf-8')),
             "+--------+--------+--------+",
             "|  {ti}  |  {li}  |  {di}  |".format(
                 ti=self.term.bold("Time"),
