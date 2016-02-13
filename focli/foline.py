@@ -5,6 +5,7 @@ import math
 import requests
 from six.moves import range
 from folitable import FoliTable
+from exceptions import FoliStopNameException
 from blessings import Terminal
 
 
@@ -18,7 +19,7 @@ class FoliPrint:
                 self.stops.append(new_stop)
         elif named_stops:
             for l in named_stops.keys():
-                new_stop = FoliStop(int(l))
+                new_stop = FoliStop(l)
                 new_stop.stop_name = named_stops[l]
                 new_stop.run()
                 self.stops.append(new_stop)
@@ -78,7 +79,7 @@ class FoliLine:
 
 
 class FoliStop:
-    def __init__(self, stopnr=157):
+    def __init__(self, stopnr="157"):
         self.stop_name = ""
         self.stopnr = stopnr
         self.url_base = "http://reittiopas.foli.fi/bin/stboard.exe/3finny?"
@@ -123,6 +124,15 @@ class FoliStop:
         return "&".join(ql)
 
     def format_stopnr(self, nr):
+        if nr[0].lower() == "t":
+            nr = int("19"+nr[1:])
+        else:
+            try:
+                nr = int(nr)
+            except ValueError:
+                raise FoliStopNameException(
+                    "{} is not a valid stop id".format(nr))
+
         return "0009{0:05d}".format(nr)
 
     def get_datestring(self):

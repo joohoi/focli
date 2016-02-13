@@ -3,6 +3,7 @@ import json
 import os
 
 from foline import FoliPrint
+from exceptions import FoliStopNameException
 
 CONFIG_PATH = "~/.focli"
 
@@ -10,14 +11,17 @@ CONFIG_PATH = "~/.focli"
 def main():
     parser = CliParser()
     ns = parser.parse_argv()
-    if ns.add:
-        return add_bookmark(ns)
-    elif ns.delete:
-        return del_bookmark(ns)
-    elif ns.list_bookmarks:
-        return list_bookmarks()
-    else:
-        return show_stops(ns)
+    try:
+        if ns.add:
+            return add_bookmark(ns)
+        elif ns.delete:
+            return del_bookmark(ns)
+        elif ns.list_bookmarks:
+            return list_bookmarks()
+        else:
+            return show_stops(ns)
+    except FoliStopNameException as e:
+        print(e.message)
 
 
 def read_config():
@@ -103,7 +107,7 @@ class CliParser:
                                  help="List saved bookmarks")
         self.parser.add_argument("-n", dest="stopname", action="store",
                                  help="Custom name for the stop to bookmark")
-        self.parser.add_argument("stopnumber", nargs="*", type=int,
+        self.parser.add_argument("stopnumber", nargs="*",
                                  help="Stop number to show / add / delete")
         return self.parser.parse_args()
 
