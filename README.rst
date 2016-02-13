@@ -41,12 +41,14 @@ Features
 
 * Displays realtime data if available for the stop
 * Shows the schedule for the current hour (see TODO section for more)
+* Color coding for delayed lines
+* Displays as many stop schedules side by side as the active terminal can fit
 
 TODO
 ====
 
 * Configure the time range to search for
 * Bus stop bookmark handling
-* Add colors to terminal output
-* Display multiple stop schedules side by side, if terminal width permits
+
+
 
