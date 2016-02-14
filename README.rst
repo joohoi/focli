@@ -14,7 +14,15 @@ Bookmarkable CLI client to timetables for a city of Turku (Föli) bus stop(s), i
 Installation
 ============
 
-Install focli by running::
+Install via pip for current user (needs ~/.local/bin on $PATH)::
+
+    pip install --user focli
+    
+Globally via pip::
+
+    sudo pip install focli
+
+Or::
 
     git clone https://github.com/joohoi/focli.git
     cd focli
