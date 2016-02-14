@@ -2,8 +2,8 @@ import argparse
 import json
 import os
 
-from foline import FoliPrint
-from exceptions import FoliStopNameException
+from focli.foline import FoliPrint
+from focli.exceptions import FoliStopNameException
 
 CONFIG_PATH = "~/.focli"
 

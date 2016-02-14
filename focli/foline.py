@@ -4,8 +4,8 @@ import math
 
 import requests
 from six.moves import range
-from folitable import FoliTable
-from exceptions import FoliStopNameException
+from focli.folitable import FoliTable
+from focli.exceptions import FoliStopNameException
 from blessings import Terminal
 
 
