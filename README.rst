@@ -2,7 +2,11 @@
 focli
 =====
 
-CLI interface to quickly see timetables for a Föli bus stop(s), including time differences to "original" schedules for lines that provide realtime data.
+CLI client to timetables for a city of Turku (Föli) bus stop(s), including time differences to prescheduled times for lines that provide realtime data.
+
+.. image:: https://cloud.githubusercontent.com/assets/5235109/13033364/dbae4d6a-d31c-11e5-8829-09c7fbc8086e.gif
+
+
 
 
 Installation
@@ -18,22 +22,20 @@ Install focli by running::
 Usage
 =====
 
-Timetable for single bus stop::
+Client parameters::
 
-    $ focli 157
-    focli 157
-    +-------+------+------------+
-    |  Time | Line | Difference |
-    +-------+------+------------+
-    | 19:22 |  30  |     0      |
-    | 19:52 |  30  |     0      |
-    +-------+------+------------+
+    usage: focli [-h] [-a] [-d] [-l] [-n STOPNAME] [stopnumber [stopnumber ...]]
+    
+    positional arguments:
+      stopnumber   Stop number to show / add / delete
+    
+    optional arguments:
+      -h, --help   show this help message and exit
+      -a           Add line to bookmarks
+      -d           Remove line from bookmarks
+      -l           List saved bookmarks
+      -n STOPNAME  Custom name for the stop to bookmark
 
-
-
-Or timetables for multiple stops::
-
-    focli 157 122
 
 
 Features
@@ -43,12 +45,13 @@ Features
 * Shows the schedule for the current hour (see TODO section for more)
 * Color coding for delayed lines
 * Displays as many stop schedules side by side as the active terminal can fit
+* Add / delete / list bookmarks
 
 TODO
 ====
 
-* Configure the time range to search for
-* Bus stop bookmark handling
+* Configurable the time range to search for
+
 
 
 
