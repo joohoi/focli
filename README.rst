@@ -2,7 +2,9 @@
 focli
 =====
 
-CLI client to timetables for a city of Turku (Föli) bus stop(s), including time differences to prescheduled times for lines that provide realtime data.
+Bookmarkable CLI client to timetables for a city of Turku (Föli) bus stop(s), including time differences to prescheduled times for lines that provide realtime data.
+
+- Bookmark once, quickly check all the stop schedules relevant to you any time you need them with only one command. 
 
 .. image:: https://cloud.githubusercontent.com/assets/5235109/13033364/dbae4d6a-d31c-11e5-8829-09c7fbc8086e.gif
 
