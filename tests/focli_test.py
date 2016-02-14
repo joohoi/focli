@@ -2,12 +2,13 @@ import pytest
 import json
 import sys
 import os
-import mock
 
 if sys.version_info.major == 2:
     import __builtin__ as builtins
+    import mock
 else:
     import builtins
+    import unittest.mock as mock
 
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, cwd + "/../")
