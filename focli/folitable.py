@@ -56,6 +56,6 @@ class FoliTable:
         return len(self.tpl_head)+len(self.rows)+1
 
     def normalize(self, nstr, length=6):
-        if len(nstr) > length:
+        if len(str(nstr)) > length:
             nstr = nstr[0:length-1]
         return nstr.center(length, " ")
