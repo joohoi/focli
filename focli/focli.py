@@ -29,7 +29,7 @@ def read_config():
         path = os.path.expanduser(CONFIG_PATH)
         with open(path, 'r') as fh:
             return json.load(fh)
-    except FileNotFoundError:
+    except IOError:
         return dict()
 
 
