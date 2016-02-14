@@ -47,13 +47,15 @@ Client parameters::
       -n STOPNAME  Custom name for the stop to bookmark
 
 
-Eg: add two bus stops to list, the one you use to get to work from home, and other the other way around:
+Eg: add two bus stops to list, the one you use to get to work from home, and other the other way around::
 
     focli -n "Home" -a 157
     focli -n "Work" -a T34
     
-after bookmarking, you can get the schedules for both of the stops simultanously every time you run 
+after bookmarking, you can get the schedules for both of the stops simultanously every time you run::
+
     focli
+    
 without arguments.
 
 
