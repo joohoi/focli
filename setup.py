@@ -5,7 +5,7 @@ import focli
 install_requires = [
     'requests>=2.3.0',
     'blessings>=1.6',
-    'six>=1.10.0'
+    'six>=1.8.0'
 ]
 
 setup(
@@ -13,7 +13,7 @@ setup(
     version=focli.__version__,
     description=focli.__doc__.strip(),
     url='https://github.com/joohoi/focli',
-    download_url='https://github.com/joohoi/focli/tarball/0.1',
+    download_url='https://github.com/joohoi/focli/tarball/0.3',
     author=focli.__author__,
     author_email='joona@kuori.org',
     license=focli.__licence__,
