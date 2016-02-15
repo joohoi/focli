@@ -1,8 +1,12 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+from __future__ import absolute_import
+
 """Command entry point"""
+
 import sys
 
-import focli
+from focli import focli
 
 
 def main():

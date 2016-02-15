@@ -124,7 +124,7 @@ class FoliStop:
     def get_querystring(self, qa):
         ql = []
         for i in qa.keys():
-            ql.append("{}={}".format(i, qa[i]))
+            ql.append("{0}={1}".format(i, qa[i]))
         return "&".join(ql)
 
     def format_stopnr(self, nr):
@@ -135,7 +135,7 @@ class FoliStop:
                 nr = int(nr)
             except ValueError:
                 raise FoliStopNameException(
-                    "{} is not a valid stop id".format(nr))
+                    "{0} is not a valid stop id".format(nr))
 
         return "0009{0:05d}".format(nr)
 

@@ -22,7 +22,7 @@ class FoliTable:
         name = self.normalize(unescape(name), self.width)
         self.tpl_head = [
             "+--------+--------+--------+",
-            "| {headline} |".format(headline=name.encode('utf-8')),
+            "| {headline} |".format(headline=name),
             "+--------+--------+--------+",
             "|  {ti}  |  {li}  |  {di}  |".format(
                 ti=self.term.bold("Time"),
@@ -60,7 +60,14 @@ class FoliTable:
         return len(self.tpl_head)+len(self.rows)+1
 
     def normalize(self, nstr, length=6):
-        nstr = str(nstr)
+        try:
+            nstr = unicode(nstr)
+            encode = True
+        except NameError:
+            encode = False
         if len(nstr) > length:
             nstr = nstr[0:length-1]
-        return nstr.center(length, " ")
+        nstr = nstr.center(length, " ")
+        if encode:
+            return nstr.encode('utf-8')
+        return nstr
