@@ -1,3 +1,5 @@
+from __future__ import absolute_import
+
 import pytest
 import json
 import sys
@@ -13,6 +15,7 @@ else:
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, cwd + "/../../")
 from focli import focli
+from focli.exceptions import FoliStopNameException
 
 
 class TestFocli:
@@ -62,6 +65,21 @@ class TestFocli:
         monkeypatch.setattr('focli.focli.show_stops',
                             mock_return)
         assert focli.main() is True
+
+    def test_main_exception(self, monkeypatch):
+        monkeypatch.setattr('sys.argv',
+                            ['focli', 'nonexistent'])
+
+        def mock_exception(a):
+            raise FoliStopNameException("message")
+
+        monkeypatch.setattr('focli.focli.show_stops',
+                            mock_exception)
+
+        assert focli.main() == 0
+
+
+
 
     def test_read_config(self, monkeypatch):
         fcontent = '{"123":"abc"}'

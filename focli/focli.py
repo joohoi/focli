@@ -25,7 +25,8 @@ def main():
         else:
             return show_stops(ns)
     except FoliStopNameException as e:
-        print(e.message)
+        print(str(e.message))
+        return 0
 
 
 def read_config():
