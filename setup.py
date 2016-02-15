@@ -13,7 +13,7 @@ setup(
     version=focli.__version__,
     description=focli.__doc__.strip(),
     url='https://github.com/joohoi/focli',
-    download_url='https://github.com/joohoi/focli/tarball/0.4',
+    download_url='https://github.com/joohoi/focli/tarball/0.5',
     author=focli.__author__,
     author_email='joona@kuori.org',
     license=focli.__licence__,
