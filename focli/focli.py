@@ -115,6 +115,3 @@ class CliParser:
         self.parser.add_argument("stopnumber", nargs="*",
                                  help="Stop number to show / add / delete")
         return self.parser.parse_args()
-
-if __name__ == "__main__":
-    main()
