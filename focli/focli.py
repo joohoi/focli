@@ -52,7 +52,7 @@ def add_bookmark(ns):
         config = read_config()
         config[ns.stopnumber[0]] = ns.stopname
         write_config(config)
-        print("Bookmark for stop {} added.".format(ns.stopnumber[0]))
+        print("Bookmark for stop {0} added.".format(ns.stopnumber[0]))
         return 0
     else:
         print("Please provide stop number to bookmark")
@@ -65,9 +65,9 @@ def del_bookmark(ns):
         if str(ns.stopnumber[0]) in config.keys():
             config.pop(str(ns.stopnumber[0]), None)
             write_config(config)
-            print("Bookmark for stop {} deleted.".format(ns.stopnumber[0]))
+            print("Bookmark for stop {0} deleted.".format(ns.stopnumber[0]))
             return 0
-        print("No bookmark for stop {}.".format(ns.stopnumber[0]))
+        print("No bookmark for stop {0}.".format(ns.stopnumber[0]))
         return 1
     else:
         print("Please provide stop number to remove.")
@@ -79,7 +79,7 @@ def list_bookmarks():
     if config:
         print("Saved bookmarks:")
         for bm in config.keys():
-            print("{} - {}".format(bm, config[bm]))
+            print("{0} - {1}".format(bm, config[bm]))
     return 0
 
 
