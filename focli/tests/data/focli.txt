@@ -1,0 +1,105 @@
+{
+    "journeys": [
+        {
+            "date": "15.02.2016",
+            "line": {
+                "date": "15.02.2016",
+                "direction": "Liljalaakso",
+                "id": "6660",
+                "name": "Lin   2A",
+                "param": "335430/118470/45328/89147/80",
+                "product": {
+                    "name": "Linja",
+                    "type": ""
+                }
+            },
+            "realTime": {
+                "hasRealTime": false,
+                "isCanceled": false
+            },
+            "time": "12:05"
+        },
+        {
+            "date": "15.02.2016",
+            "line": {
+                "date": "15.02.2016",
+                "direction": "L&#228;nsinummi",
+                "id": "14981",
+                "name": "Lin    2",
+                "param": "554067/199670/297608/35885/80",
+                "product": {
+                    "name": "Linja",
+                    "type": ""
+                }
+            },
+            "realTime": {
+                "date": "15.02.2016",
+                "delay": "0",
+                "hasRealTime": true,
+                "isCanceled": false,
+                "isDelayed": false,
+                "isOnTime": true,
+                "time": "13:50"
+            },
+            "time": "13:50"
+        },
+        {
+            "date": "15.02.2016",
+            "line": {
+                "date": "15.02.2016",
+                "direction": "L&#228;nsinummi",
+                "id": "14981",
+                "name": "Lin    2",
+                "param": "554067/199670/297608/35885/80",
+                "product": {
+                    "name": "Linja",
+                    "type": ""
+                }
+            },
+            "realTime": {
+                "date": "15.02.2016",
+                "delay": "2",
+                "hasRealTime": true,
+                "isCanceled": false,
+                "isDelayed": true,
+                "isOnTime": false,
+                "time": "12:17"
+            },
+            "time": "12:15"
+        },
+        {
+            "date": "15.02.2016",
+            "line": {
+                "date": "15.02.2016",
+                "direction": "L&#228;nsinummi",
+                "id": "14981",
+                "name": "Lin    2",
+                "param": "554067/199670/297608/35885/80",
+                "product": {
+                    "name": "Linja",
+                    "type": ""
+                }
+            },
+            "realTime": {
+                "date": "15.02.2016",
+                "delay": "0",
+                "hasRealTime": true,
+                "isCanceled": false,
+                "isDelayed": false,
+                "isOnTime": true,
+                "time": "12:22"
+            },
+            "time": "12:22"
+        }
+    ],
+    "query": {
+        "date": "15.02.2016",
+        "station": {
+            "evaId": "901933",
+            "name": "T33 - Kauppatori",
+            "type": 1,
+            "x": "22268168",
+            "y": "60451333"
+        }
+    }
+}

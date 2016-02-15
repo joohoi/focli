@@ -9,7 +9,7 @@ import math
 import requests
 from six.moves import range
 from focli.folitable import FoliTable
-from focli.exceptions import FoliStopNameException
+from focli.exceptions import FoliStopNameException, FoliServerException
 from blessings import Terminal
 
 
@@ -103,8 +103,8 @@ class FoliStop:
         if not self.stop_name:
             self.stop_name = data['query']['station']['name']
         self.journeys = []
-        for jo in data['journeys']:
-            try:
+        try:
+            for jo in data['journeys']:
                 jo_time = jo['time'].split(":")
                 line_time = datetime.datetime(today.year, today.month,
                                               today.day, int(jo_time[0]),
@@ -118,8 +118,8 @@ class FoliStop:
                     new_line.timediff = jo['realTime']['delay']
                 self.journeys.append(new_line)
 
-            except KeyError:
-                print("Error while parsing line")
+        except KeyError:
+            print("Error while parsing line")
 
     def get_querystring(self, qa):
         ql = []
@@ -152,4 +152,6 @@ class FoliStop:
         req = requests.get(self.url)
         if req.status_code == 200:
             return req.text
-        return None
+        else:
+            raise FoliServerException(
+                "Server responded with status {0}".format(req.status_code))

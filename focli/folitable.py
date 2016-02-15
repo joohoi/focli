@@ -64,6 +64,8 @@ class FoliTable:
             nstr = unicode(nstr)
             encode = True
         except NameError:
+            if not isinstance(nstr, str):
+                nstr = str(nstr)
             encode = False
         if len(nstr) > length:
             nstr = nstr[0:length-1]
