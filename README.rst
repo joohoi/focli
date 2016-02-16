@@ -73,3 +73,5 @@ TODO
 
 * Configurable time range to search for
 * Exclude certain buses (or lines) from the output, add option for that exclude in bookmarks too
+* Migrate to a different api endpoints
+* Option to show destination
