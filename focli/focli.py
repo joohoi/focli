@@ -7,7 +7,7 @@ import json
 import os
 
 from focli.foline import FoliPrint
-from focli.exceptions import FoliStopNameException
+from focli import exceptions
 
 CONFIG_PATH = "~/.focli"
 
@@ -24,7 +24,7 @@ def main():
             ret = list_bookmarks()
         else:
             ret = show_stops(ns)
-    except FoliStopNameException as e:
+    except exceptions.FoliStopNameException as e:
         print(str(e.message))
         ret = 1
     if ret != 0:
@@ -87,18 +87,22 @@ def list_bookmarks():
 
 
 def show_stops(ns):
-    if len(ns.stopnumber):
-        f_print = FoliPrint(ns.stopnumber)
-        f_print.print_lines()
-        return 0
-    else:
-        config = read_config()
-        if config:
-            f_print = FoliPrint(named_stops=config)
+    try:
+        if len(ns.stopnumber):
+            f_print = FoliPrint(ns.stopnumber)
             f_print.print_lines()
             return 0
         else:
-            return 1
+            config = read_config()
+            if config:
+                f_print = FoliPrint(named_stops=config)
+                f_print.print_lines()
+                return 0
+            else:
+                return 1
+    except exceptions.FoliServerException as e:
+        print(e.message)
+        return 1
 
 
 class CliParser:

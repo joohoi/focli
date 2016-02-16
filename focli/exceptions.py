@@ -1,13 +1,18 @@
 """ focli exceptions """
 
 
-class FoliStopNameException(Exception):
-    """ Stop name error """
+class FoliException(Exception):
+    """ Base exception """
     def __init__(self, message):
         self.message = message
 
 
-class FoliServerException(Exception):
+class FoliStopNameException(FoliException):
     """ Stop name error """
-    def __init__(self, message):
-        self.message = message
+
+
+class FoliServerException(FoliException):
+    """ Stop name error """
+
+class FoliParseDataError(FoliException):
+    """ Error parsing data """

@@ -1,10 +1,8 @@
 from __future__ import absolute_import
 
 import pytest
-import json
 import sys
 import os
-import datetime
 
 if sys.version_info[0] == 2:
     import __builtin__ as builtins
@@ -16,11 +14,11 @@ else:
 cwd = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, cwd + "/../../")
 from focli import foline
-from focli.exceptions import FoliStopNameException, FoliServerException
+from focli import exceptions
 from freezegun import freeze_time
 
 
-@freeze_time("2016-02-15 12:00:01")
+@freeze_time("2016-02-16 13:22:01")
 @pytest.fixture
 def foliprint(monkeypatch):
     def mock_req_get(*args, **kwargs):
@@ -33,22 +31,6 @@ def foliprint(monkeypatch):
     monkeypatch.setattr('requests.get', mock_req_get)
     monkeypatch.setattr('blessings.Terminal.width', 100)
     return foline.FoliPrint(['T34', '157'])
-
-
-@freeze_time("2016-02-15 12:00:01")
-@pytest.fixture
-def foliprintbroken(monkeypatch):
-    def mock_req_get(*args, **kwargs):
-        mock_requests_get = mock.Mock()
-        mock_requests_get.status_code = 200
-        dloc = os.path.dirname(os.path.abspath(__file__)) + "/data/focli_broken.txt"
-        with open(dloc, 'r') as fh:
-            mock_requests_get.text = fh.read()
-        return mock_requests_get
-    monkeypatch.setattr('requests.get', mock_req_get)
-
-    return foline.FoliPrint(['T34', '157'])
-
 
 
 @pytest.fixture
@@ -69,17 +51,16 @@ class TestFocli:
         monkeypatch.setattr('blessings.Terminal.width', 100)
         assert foliprint.fits_line() == 3
 
-    @freeze_time("2016-02-15 12:00:01")
+    @freeze_time("2016-02-16 13:22:01")
     def test_get_tables(self, monkeypatch, foliprint):
         assert len(foliprint.get_tables()) == 2
 
-    @freeze_time("2016-02-15 12:00:01")
-    def test_run(self, monkeypatch, foliprint, foliprintbroken):
-        assert len(foliprint.stops[0].journeys) == 4
-        assert len(foliprintbroken.stops[0].journeys) == 0
+    @freeze_time("2016-02-16 13:22:01")
+    def test_run(self, monkeypatch, foliprint):
+        assert len(foliprint.stops[0].journeys) == 30
 
     def test_bad_format(self):
-        with pytest.raises(FoliStopNameException):
+        with pytest.raises(exceptions.FoliStopNameException):
             foline.FoliPrint(['nonexistent'])
 
     def test_breaking_request(self, monkeypatch):
@@ -88,5 +69,18 @@ class TestFocli:
             mock_requests_get.status_code = 404
             return mock_requests_get
         monkeypatch.setattr('requests.get', mock_req_get)
-        with pytest.raises(FoliServerException):
+        with pytest.raises(exceptions.FoliServerException):
             foline.FoliPrint(['157'])
+
+    def test_broken_json(self, monkeypatch):
+        def mock_req_get(*args, **kwargs):
+            mock_requests_get = mock.Mock()
+            mock_requests_get.status_code = 200
+            dloc = os.path.dirname(
+                os.path.abspath(__file__)) + "/data/focli_broken.txt"
+            with open(dloc, 'r') as fh:
+                mock_requests_get.text = fh.read()
+            return mock_requests_get
+        monkeypatch.setattr('requests.get', mock_req_get)
+        with pytest.raises(exceptions.FoliParseDataError):
+            foline.FoliPrint(['T34'])

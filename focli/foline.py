@@ -9,7 +9,7 @@ import math
 import requests
 from six.moves import range
 from focli.folitable import FoliTable
-from focli.exceptions import FoliStopNameException, FoliServerException
+from focli import exceptions
 from blessings import Terminal
 
 
@@ -46,7 +46,7 @@ class FoliPrint:
 
     def fits_line(self):
         term = Terminal()
-        return math.floor(term.width/29)
+        return math.floor(term.width/33)
 
     def get_tables(self):
         tables = []
@@ -54,11 +54,13 @@ class FoliPrint:
             t = FoliTable(s.stop_name)
             journeys = self.filter_list(s.journeys)
             for jo in journeys:
-                f_timediff = datetime.timedelta(minutes=int(jo.timediff))
+                f_timediff = jo.timediff-jo.time
                 line_time = jo.time + f_timediff
-                f_time = "{0:02d}:{1:02d}".format(line_time.hour,
-                                                  line_time.minute)
-                t.add_row(f_time, jo.name, jo.timediff)
+                f_time = "{0:02d}:{1:02d}:{2:02d}".format(line_time.hour,
+                                                         line_time.minute,
+                                                         line_time.second)
+                t.add_row(f_time, jo.name, jo.timediff_min_sec(),
+                          f_timediff.seconds)
             tables.append(t)
         return tables
 
@@ -74,84 +76,83 @@ class FoliPrint:
 class FoliLine:
     def __init__(self, name, ltime, realtime=False,
                  cancelled=False, ontime=True, timediff=0):
-        self.name = name.split(" ")[-1]
+        if timediff == 0:
+            timediff = ltime
+        self.name = name
         self.time = ltime
         self.realtime = realtime
         self.cancelled = cancelled
         self.ontime = ontime
         self.timediff = timediff
 
+    def timediff_min_sec(self):
+        """ Get timediff in format 1m48s """
+        tdiff = self.timediff - self.time
+        minutes, seconds = divmod(tdiff.seconds, 60)
+        if minutes == 0 and seconds == 0:
+            return "-"
+        if minutes:
+            return "{0}m{1:02d}s".format(minutes, seconds)
+        return "{0:02d}s".format(seconds)
+
 
 class FoliStop:
     def __init__(self, stopnr="157"):
         self.stop_name = ""
-        self.stopnr = stopnr
-        self.url_base = "http://reittiopas.foli.fi/bin/stboard.exe/3finny?"
-        self.attrs = {'dateBegin': self.get_datestring(),
-                      'dateEnd': self.get_datestring(),
-                      'input': self.format_stopnr(stopnr),
-                      'selectDate': 'period',
-                      'start': '1',
-                      'timeSlots': '1',
-                      'boardType': 'dep',
-                      'tpl': 'stationboardResult2json'}
-        self.url = self.get_url()
+        self.stopnr = self.normalize_stopnr(stopnr)
+        self.url = ("http://data-western.foli.fi/stops/{0}".format(
+            self.stopnr))
 
     def run(self):
-        today = datetime.date.today()
-        data = json.loads(self.get_data())
+        """ Perform request, and populate journey data table """
+        try:
+            data = json.loads(self.get_data())
+        except ValueError:
+            raise exceptions.FoliParseDataException(
+                "Got bad data from url: {0}".format(self.url))
         if not self.stop_name:
-            self.stop_name = data['query']['station']['name']
+            self.stop_name = self.stopnr
         self.journeys = []
         try:
-            for jo in data['journeys']:
-                jo_time = jo['time'].split(":")
-                line_time = datetime.datetime(today.year, today.month,
-                                              today.day, int(jo_time[0]),
-                                              int(jo_time[1]))
+            for jo in data['result']:
+                jo_time = jo['aimeddeparturetime']
+                line_time = datetime.datetime.fromtimestamp(jo_time)
 
-                new_line = FoliLine(jo['line']['name'], line_time,
-                                    realtime=jo['realTime']['hasRealTime'],
-                                    cancelled=jo['realTime']['isCanceled'])
-                if 'isOnTime' in jo['realTime'].keys():
-                    new_line.ontime = jo['realTime']['isOnTime']
-                    new_line.timediff = jo['realTime']['delay']
+                new_line = FoliLine(jo['lineref'], line_time,
+                                    realtime=True)
+                if 'delay' in jo.keys():
+                    new_line.ontime = False
+                    new_line.timediff = datetime.datetime.fromtimestamp(
+                        jo['expecteddeparturetime'])
                 self.journeys.append(new_line)
 
         except KeyError:
-            print("Error while parsing line")
+            raise exceptions.FoliParseDataError("Error while parsing data"
+                                                " for line {0}".format(
+                                                    self.stopnr))
 
-    def get_querystring(self, qa):
-        ql = []
-        for i in qa.keys():
-            ql.append("{0}={1}".format(i, qa[i]))
-        return "&".join(ql)
-
-    def format_stopnr(self, nr):
-        if nr[0].lower() == "t":
-            nr = int("19"+nr[1:])
-        else:
-            try:
-                nr = int(nr)
-            except ValueError:
-                raise FoliStopNameException(
-                    "{0} is not a valid stop id".format(nr))
-
-        return "0009{0:05d}".format(nr)
-
-    def get_datestring(self):
-        today = datetime.date.today()
-        return "{0:02d}.{1:02d}.{2:04d}".format(today.day,
-                                                today.month,
-                                                today.year)
-
-    def get_url(self):
-        return self.url_base+self.get_querystring(self.attrs)
+    def normalize_stopnr(self, nr):
+        """ Simple validation and normalization of stop nr,
+            raise FoliStopNameException if b0rked
+        """
+        try:
+            if nr[0].lower() == "t":
+                retnr = "T{0}".format(int(nr[1:]))
+            else:
+                retnr = "{0}".format(int(nr))
+        except ValueError:
+            raise exceptions.FoliStopNameException(
+                "{0} is not a valid stop id".format(nr))
+        return retnr
 
     def get_data(self):
         req = requests.get(self.url)
         if req.status_code == 200:
             return req.text
+        elif req.status_code == 404:
+            raise exceptions.FoliServerException(
+                "Server response was: 404 - Not Found, '{0}'"
+                " doesn't seem like a valid stop id".format(self.stopnr))
         else:
-            raise FoliServerException(
+            raise exceptions.FoliServerException(
                 "Server responded with status {0}".format(req.status_code))
