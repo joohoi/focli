@@ -1,0 +1,8 @@
+.ropeproject
+*.pyc
+.tox
+*egg-info
+.cache
+.coverage
+build/
+dist/
