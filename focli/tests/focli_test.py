@@ -76,7 +76,7 @@ class TestFocli:
         monkeypatch.setattr('focli.focli.show_stops',
                             mock_exception)
 
-        assert focli.main() == 0
+        assert focli.main() == 1
 
     def test_read_config(self, monkeypatch):
         fcontent = '{"123":"abc"}'

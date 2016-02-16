@@ -17,16 +17,19 @@ def main():
     ns = parser.parse_argv()
     try:
         if ns.add:
-            return add_bookmark(ns)
+            ret = add_bookmark(ns)
         elif ns.delete:
-            return del_bookmark(ns)
+            ret = del_bookmark(ns)
         elif ns.list_bookmarks:
-            return list_bookmarks()
+            ret = list_bookmarks()
         else:
-            return show_stops(ns)
+            ret = show_stops(ns)
     except FoliStopNameException as e:
         print(str(e.message))
-        return 0
+        ret = 1
+    if ret != 0:
+        parser.print_help()
+    return ret
 
 
 def read_config():
@@ -115,3 +118,6 @@ class CliParser:
         self.parser.add_argument("stopnumber", nargs="*",
                                  help="Stop number to show / add / delete")
         return self.parser.parse_args()
+
+    def print_help(self):
+        self.parser.print_help()
