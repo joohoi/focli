@@ -100,7 +100,7 @@ def show_stops(ns):
                 return 0
             else:
                 return 1
-    except exceptions.FoliServerException as e:
+    except exceptions.FoliException as e:
         print(e.message)
         return 1
 

@@ -14,5 +14,10 @@ class FoliStopNameException(FoliException):
 class FoliServerException(FoliException):
     """ Stop name error """
 
+
 class FoliParseDataError(FoliException):
     """ Error parsing data """
+
+
+class FoliTerminalException(FoliException):
+    """ Error getting terminal info """

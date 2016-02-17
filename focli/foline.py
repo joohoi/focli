@@ -46,7 +46,11 @@ class FoliPrint:
 
     def fits_line(self):
         term = Terminal()
-        return math.floor(term.width/33)
+        try:
+            retwidth = math.floor(term.width/33)
+        except TypeError:
+            raise exceptions.FoliTerminalException("Could not determine terminal size")
+        return retwidth
 
     def get_tables(self):
         tables = []
