@@ -6,7 +6,7 @@ Bookmarkable CLI client to timetables for a city of Turku (Föli) bus stop(s), i
 
 Bookmark once, quickly check all the stop schedules relevant to you any time you need them with only one command. 
 
-.. image:: https://cloud.githubusercontent.com/assets/5235109/13033364/dbae4d6a-d31c-11e5-8829-09c7fbc8086e.gif
+.. image:: https://cloud.githubusercontent.com/assets/5235109/13114915/4aac1f02-d59e-11e5-9565-02ce1e104893.gif
 
 
 
@@ -43,6 +43,7 @@ Client parameters::
       -h, --help   show this help message and exit
       -a           Add line to bookmarks
       -d           Remove line from bookmarks
+      -v           Verbose output (show destination)
       -l           List saved bookmarks
       -n STOPNAME  Custom name for the stop to bookmark
 
@@ -55,6 +56,10 @@ Eg: add two bus stops to list, the one you use to get to work from home, and oth
 after bookmarking, you can get the schedules for both of the stops simultanously every time you run::
 
     focli
+
+or::
+    
+    focli -v
     
 without arguments.
 
@@ -63,15 +68,17 @@ Features
 ========
 
 * Displays realtime data if available for the stop
-* Shows the schedule for the current hour (see TODO section for more)
+* Shows the schedule for the current hour
 * Color coding for delayed lines
 * Displays as many stop schedules side by side as the active terminal can fit
 * Add / delete / list bookmarks
+* Option to show destination (disabled by default to avoid cluttering)
+
+Changelog
+=========
+- 1.0 - Initial release
 
 TODO
 ====
 
-* Configurable time range to search for
-* Exclude certain buses (or lines) from the output, add option for that exclude in bookmarks too
-* Migrate to a different api endpoints
-* Option to show destination
+* Exclude certain lines from the output, useful for stops with heavy traffic
