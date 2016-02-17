@@ -15,11 +15,31 @@ except ImportError:
 
 
 class FoliTable:
-    def __init__(self, name):
+    def __init__(self, name, verbose=False):
+        self.verbose = verbose
         self.width = 28
+        self.width_verbose = 48
         self.rows = []
         self.term = Terminal()
-        name = self.normalize(unescape(name), self.width)
+        if verbose:
+            name = self.normalize(unescape(name), self.width_verbose)
+        else:
+            name = self.normalize(unescape(name), self.width)
+
+        self.tpl_head_verbose = [
+            "+------------+--------+--------+-------------------+",
+            "| {headline} |".format(headline=name),
+            "+------------+--------+--------+-------------------+",
+            "|    {ti}    |  {li}  |  {di}  | {destination} |".format(
+                ti=self.term.bold("Time"),
+                li=self.term.bold("Line"),
+                di=self.term.bold("Diff"),
+                destination=self.term.bold(
+                    self.normalize("Destination", 17))),
+            "+------------+--------+--------+-------------------+"]
+        self.tpl_line_verbose = "| {time} | {line} | {diff} | {dest} |"
+        self.tpl_endl_verbose = ("+------------+--------+--------"
+                                 "+-------------------+")
         self.tpl_head = [
             "+------------+--------+--------+",
             "| {headline} |".format(headline=name),
@@ -32,7 +52,7 @@ class FoliTable:
         self.tpl_line = "| {time} | {line} | {diff} |"
         self.tpl_endl = "+------------+--------+--------+"
 
-    def add_row(self, ftime, line, diff, timediff):
+    def add_row(self, ftime, line, diff, timediff, dest=None):
         if timediff <= 0:
             ftime = self.term.green(self.normalize(ftime, 10))
             diff = self.term.green(self.normalize(diff))
@@ -40,21 +60,38 @@ class FoliTable:
             ftime = self.term.red(self.normalize(ftime, 10))
             diff = self.term.red(self.normalize(diff))
         line = self.term.bold(self.normalize(line))
-        row = self.tpl_line.format(
-            time=ftime,
-            line=line,
-            diff=diff)
+        if self.verbose:
+            dest = self.normalize(dest, 17)
+            row = self.tpl_line_verbose.format(
+                time=ftime,
+                line=line,
+                diff=diff,
+                dest=dest)
+        else:
+            row = self.tpl_line.format(
+                time=ftime,
+                line=line,
+                diff=diff)
         self.rows.append(row)
 
     def get_row(self, rownr):
         if rownr < len(self.tpl_head):
-            return self.tpl_head[rownr]
+            if self.verbose:
+                return self.tpl_head_verbose[rownr]
+            else:
+                return self.tpl_head[rownr]
         elif rownr < (len(self.tpl_head)+len(self.rows)):
             return self.rows[rownr-len(self.tpl_head)]
         elif rownr == (len(self.tpl_head)+len(self.rows)):
-            return self.tpl_endl
+            if self.verbose:
+                return self.tpl_endl_verbose
+            else:
+                return self.tpl_endl
         else:
-            return " "*len(self.tpl_endl)
+            if self.verbose:
+                return " "*len(self.tpl_endl_verbose)
+            else:
+                return " "*len(self.tpl_endl)
 
     def num_lines(self):
         return len(self.tpl_head)+len(self.rows)+1

@@ -14,7 +14,8 @@ from blessings import Terminal
 
 
 class FoliPrint:
-    def __init__(self, flines=[], named_stops=dict()):
+    def __init__(self, flines=[], named_stops=dict(), verbose=False):
+        self.verbose = verbose
         self.stops = []
         if flines:
             for l in flines:
@@ -47,7 +48,10 @@ class FoliPrint:
     def fits_line(self):
         term = Terminal()
         try:
-            retwidth = math.floor(term.width/33)
+            if self.verbose:
+                retwidth = math.floor(term.width/53)
+            else:
+                retwidth = math.floor(term.width/33)
         except TypeError:
             raise exceptions.FoliTerminalException(
                 "Could not determine terminal size")
@@ -56,7 +60,7 @@ class FoliPrint:
     def get_tables(self):
         tables = []
         for s in self.stops:
-            t = FoliTable(s.stop_name)
+            t = FoliTable(s.stop_name, self.verbose)
             journeys = self.filter_list(s.journeys)
             for jo in journeys:
                 f_timediff = jo.timediff-jo.time
@@ -69,7 +73,7 @@ class FoliPrint:
                 else:
                     t_diff_secs = f_timediff.seconds
                 t.add_row(f_time, jo.name, jo.timediff_min_sec(),
-                          t_diff_secs)
+                          t_diff_secs, jo.dest)
             tables.append(t)
         return tables
 
@@ -84,7 +88,8 @@ class FoliPrint:
 
 class FoliLine:
     def __init__(self, name, ltime, realtime=False,
-                 cancelled=False, ontime=True, timediff=0):
+                 cancelled=False, ontime=True, timediff=0,
+                 dest=None):
         if timediff == 0:
             timediff = ltime
         self.name = name
@@ -93,6 +98,7 @@ class FoliLine:
         self.cancelled = cancelled
         self.ontime = ontime
         self.timediff = timediff
+        self.dest = dest
 
     def timediff_min_sec(self):
         """ Get timediff in format 1m48s """
@@ -130,9 +136,10 @@ class FoliStop:
             for jo in data['result']:
                 jo_time = jo['aimeddeparturetime']
                 line_time = datetime.datetime.fromtimestamp(jo_time)
-
+                destination = jo['destinationdisplay']
                 new_line = FoliLine(jo['lineref'], line_time,
-                                    realtime=True)
+                                    realtime=True,
+                                    dest=destination)
                 if 'delay' in jo.keys():
                     new_line.ontime = False
                     new_line.timediff = datetime.datetime.fromtimestamp(

@@ -89,13 +89,13 @@ def list_bookmarks():
 def show_stops(ns):
     try:
         if len(ns.stopnumber):
-            f_print = FoliPrint(ns.stopnumber)
+            f_print = FoliPrint(ns.stopnumber, verbose=ns.verbose)
             f_print.print_lines()
             return 0
         else:
             config = read_config()
             if config:
-                f_print = FoliPrint(named_stops=config)
+                f_print = FoliPrint(named_stops=config, verbose=ns.verbose)
                 f_print.print_lines()
                 return 0
             else:
@@ -113,6 +113,10 @@ class CliParser:
         self.parser.add_argument("-d", dest="delete", action="store_true",
                                  default=False,
                                  help="Remove line from bookmarks")
+        self.parser.add_argument("-v", dest="verbose",
+                                 action="store_true",
+                                 default=False,
+                                 help="Verbose output (show destination)")
         self.parser.add_argument("-l", dest="list_bookmarks",
                                  action="store_true",
                                  default=False,
