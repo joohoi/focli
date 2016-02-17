@@ -49,7 +49,8 @@ class FoliPrint:
         try:
             retwidth = math.floor(term.width/33)
         except TypeError:
-            raise exceptions.FoliTerminalException("Could not determine terminal size")
+            raise exceptions.FoliTerminalException(
+                "Could not determine terminal size")
         return retwidth
 
     def get_tables(self):
@@ -61,10 +62,14 @@ class FoliPrint:
                 f_timediff = jo.timediff-jo.time
                 line_time = jo.time + f_timediff
                 f_time = "{0:02d}:{1:02d}:{2:02d}".format(line_time.hour,
-                                                         line_time.minute,
-                                                         line_time.second)
+                                                          line_time.minute,
+                                                          line_time.second)
+                if f_timediff.days < 0:
+                    t_diff_secs = f_timediff.seconds - 86400
+                else:
+                    t_diff_secs = f_timediff.seconds
                 t.add_row(f_time, jo.name, jo.timediff_min_sec(),
-                          f_timediff.seconds)
+                          t_diff_secs)
             tables.append(t)
         return tables
 
@@ -92,7 +97,11 @@ class FoliLine:
     def timediff_min_sec(self):
         """ Get timediff in format 1m48s """
         tdiff = self.timediff - self.time
-        minutes, seconds = divmod(tdiff.seconds, 60)
+        if tdiff.days < 0:
+            diff_secs = tdiff.seconds - 86400
+        else:
+            diff_secs = tdiff.seconds
+        minutes, seconds = divmod(diff_secs, 60)
         if minutes == 0 and seconds == 0:
             return "-"
         if minutes:
