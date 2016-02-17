@@ -4,5 +4,5 @@
 focli - Decent frontend to Föli stop schedules
 """
 __author__ = 'Joona Hoikkala'
-__version__ = '0.9'
+__version__ = '1.0'
 __licence__ = 'BSD'
